@@ -1,6 +1,5 @@
 package com.sk.aiprocessor.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.messages.Message;
@@ -41,12 +40,14 @@ public class OllamaService {
           var systemMessage = new SystemMessage("You primary function is to answer questions about the customer data that you have been provided with.");
 
 
-          List<Document> sourceDocuments = List.of(new Document("The users firstName is Andre and he works for a private comapny"));
+          List<Document> sourceDocuments =
+                  List.of(new Document("The users firstName is Andre and he works for a private comapny", Map.of("meta1", "meta1")),
+                          new Document("Andre also like F1 motor racing"),
+                          new Document("Andre is also keen on using JAva every day"));
           vectorStore.add(sourceDocuments);
 
           List<Document> similarDocuments = vectorStore.similaritySearch(SearchRequest.query(question).withTopK(2));
           List<String> contentList = similarDocuments.stream().map(Document::getContent).toList();
-
 
           //   Create the user prompt using the template provided.
           PromptTemplate promptTemplate = new PromptTemplate(customerPromptResource);
